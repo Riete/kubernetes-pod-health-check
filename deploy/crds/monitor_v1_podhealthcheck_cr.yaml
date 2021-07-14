@@ -1,0 +1,18 @@
+apiVersion: monitor.kphc/v1
+kind: PodHealthCheck
+metadata:
+  name: example-podhealthcheck
+spec:
+  # Add fields here
+  dingTalk:
+    webhook: xxxx
+    secret: xxxx
+  namespace: xxx # resource namespace
+  labelSelector: # label selector to selector pods
+    key: value
+  # only support http now
+  healthCheck:
+    interval: 60 # unit is second
+    port: 80
+    path: /path
+    timeout: 5 # unit is second
