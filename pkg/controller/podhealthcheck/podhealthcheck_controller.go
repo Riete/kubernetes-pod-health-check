@@ -137,7 +137,7 @@ func doHealthCheck(ip, port, path string, namespace, podName string, timeout tim
 	err := s.Get(address)
 	if err != nil {
 		log.Info(fmt.Sprintf("GET %s with %s", address, err.Error()))
-		message := fmt.Sprintf("GET %s Failed %s, %s/%s", address, namespace, err.Error(), podName)
+		message := fmt.Sprintf("GET %s Failed with %s, %s/%s", address, err.Error(), namespace, podName)
 		sendAlert(message, webhook, secret)
 	} else if s.Request.StatusCode < 200 || s.Request.StatusCode > 300 {
 		log.Info(fmt.Sprintf("GET %s return %s", address, s.Request.Status))
