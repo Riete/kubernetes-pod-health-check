@@ -107,11 +107,8 @@ func (r *ReconcilePodHealthCheck) Reconcile(request reconcile.Request) (reconcil
 	labelSelector := labels.SelectorFromSet(instance.Spec.LabelSelector)
 	listOps := &client.ListOptions{Namespace: instance.Spec.Namespace, LabelSelector: labelSelector}
 	err = r.client.List(context.TODO(), listOps, podList)
-	log.Info(fmt.Sprintf("%v", labelSelector))
-	log.Info(fmt.Sprintf("%v", listOps))
-	log.Info(fmt.Sprintf("%d pods", len(podList.Items)))
 	if err != nil {
-		reqLogger.Error(err, fmt.Sprintf("[%s] Failed to list pods in namespace：%s with label selector %v", instance.Name, instance.Spec.Namespace, instance.Spec.LabelSelector))
+		reqLogger.Error(err, fmt.Sprintf("[%s] Failed to list pods in namespace [%s] with label selector [%v]", instance.Name, instance.Spec.Namespace, instance.Spec.LabelSelector))
 		return reconcile.Result{Requeue: true, RequeueAfter: instance.Spec.HealthCheck.Interval * time.Second}, nil
 	}
 	for _, pod := range podList.Items {
