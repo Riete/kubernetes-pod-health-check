@@ -112,16 +112,18 @@ func (r *ReconcilePodHealthCheck) Reconcile(request reconcile.Request) (reconcil
 		return reconcile.Result{Requeue: true, RequeueAfter: instance.Spec.HealthCheck.Interval * time.Second}, nil
 	}
 	for _, pod := range podList.Items {
-		go doHealthCheck(
-			pod.Status.PodIP,
-			instance.Spec.HealthCheck.Port,
-			instance.Spec.HealthCheck.Path,
-			pod.Namespace,
-			pod.Name,
-			instance.Spec.HealthCheck.Timeout,
-			instance.Spec.DingTalk.Webhook,
-			instance.Spec.DingTalk.Secret,
-		)
+		if pod.Status.Phase == corev1.PodRunning {
+			go doHealthCheck(
+				pod.Status.PodIP,
+				instance.Spec.HealthCheck.Port,
+				instance.Spec.HealthCheck.Path,
+				pod.Namespace,
+				pod.Name,
+				instance.Spec.HealthCheck.Timeout,
+				instance.Spec.DingTalk.Webhook,
+				instance.Spec.DingTalk.Secret,
+			)
+		}
 	}
 	reqLogger.Info(fmt.Sprintf("[%s] recheck after %d seconds", instance.Name, instance.Spec.HealthCheck.Interval))
 	return reconcile.Result{Requeue: true, RequeueAfter: instance.Spec.HealthCheck.Interval * time.Second}, nil
